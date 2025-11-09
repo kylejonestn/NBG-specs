@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBG Onboarding Quiz</title>
+    <style>
+        /* --- Base Styles --- */
+        :root {
+            --primary-color: #003366; /* Nucor-like Blue */
+            --light-gray: #f4f7f6;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333;
+            --accent-color: #007bff;
+            --correct-bg: #e6f7e6;
+            --correct-border: #b7e1b7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Large font size for older eyes */
+            font-size: 18px; 
+        }
+
+        /* --- Quiz Container --- */
+        #quiz-container {
+            width: 100%;
+            max-width: 700px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--medium-gray);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem; /* Large heading */
+        }
+
+        #quiz-body {
+            padding: 30px;
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            display: none; /* Hidden by default */
+        }
+
+        .question-card.active {
+            display: block; /* Shown by JS */
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.5rem; /* Large question text */
+            font-weight: 500;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        /* --- Answer/Feedback --- */
+        .feedback-container {
+            display: none; /* Hidden until button click */
+            background-color: var(--correct-bg);
+            border: 1px solid var(--correct-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .feedback-container strong {
+            font-size: 1.1rem;
+            color: #2a5a2a;
+        }
+
+        .feedback-container p {
+            margin: 10px 0 0 0;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: block;
+            width: 100%;
+            font-family: inherit;
+            font-size: 1.2rem; /* Large, clear text */
+            font-weight: 600;
+            text-align: center;
+            padding: 18px 25px; /* Large tap target */
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .show-answer-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .show-answer-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* --- Navigation --- */
+        #navigation {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--medium-gray);
+            background-color: var(--light-gray);
+            padding: 20px 30px;
+        }
+
+        .nav-btn {
+            background-color: #f0f0f0;
+            color: var(--dark-gray);
+            border: 1px solid #ccc;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        
+        .nav-btn:first-child {
+            margin-right: 10px;
+        }
+        
+        .nav-btn:last-child {
+            margin-left: 10px;
+        }
+
+        .nav-btn:hover {
+            background-color: #e9e9e9;
+        }
+
+        .nav-btn:disabled {
+            background-color: #f9f9f9;
+            color: #aaa;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body>
+
+    <main id="quiz-container">
+        <header>
+            <h1>NBG Specifications Onboarding Quiz</h1>
+        </header>
+
+        <div id="quiz-body">
+            
+            <div class="question-card active" data-question="0">
+                <p class="progress-text">Question 1 / 22</p>
+                <h2 class="question-text">What is the primary purpose of the Standard Specifications Guide?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(0)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>To provide the owner or design professional with a detailed description of all standard NBG products and to help the architect or engineer of record specify the best building system solution.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The guide's main purpose is to describe all standard NBG products and assist the architect or engineer in specifying the best solution.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="1">
+                <p class="progress-text">Question 2 / 22</p>
+                <h2 class="question-text">Which manual, published by the MBMA, is incorporated by reference into all NBG project specifications?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(1)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>The MBMA Metal Building Systems Manual.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The correct answer is the <strong>MBMA Metal Building Systems Manual</strong>. This manual is referenced throughout the guide.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="2">
+                <p class="progress-text">Question 3 / 22</p>
+                <h2 class="question-text">True or False: NBG will provide items that are not specifically called for in the NBG order documents.</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(2)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>False.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>This is false. The guide is very clear: "NBG will not provide items not specifically called for in the NBG order documents".</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="3">
+                <p class="progress-text">Question 4 / 22</p>
+                <h2 class="question-text">How is the building "eave height" defined?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(3)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>The distance from the finished floor to the top of the eave strut or purlin at the steel line.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>Eave height is measured from the <strong>finished floor</strong> to the <strong>top of the eave strut or purlin</strong> at the steel line.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="4">
+                <p class="progress-text">Question 5 / 22</p>
+                <h2 class="question-text">How is the building "width" defined?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(4)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>The distance from the outside face of one sidewall girt to the outside face of the opposing sidewall girt (steel line to steel line).</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>Building width isn't the total building footprint. It's specifically measured from the <strong>outside face of the sidewall girt</strong> to the <strong>outside face of the opposite sidewall girt</strong>.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="5">
+                <p class="progress-text">Question 6 / 22</p>
+                <h2 class="question-text">True or False: The NBG sealing engineer is the "Engineer of Record" for the project.</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(5)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>False.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>This is false. The guide states, "NBG's sealing engineer is <strong>not</strong> the 'Engineer of Record' for the project and cannot be construed as such".</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="6">
+                <p class="progress-text">Question 7 / 22</p>
+                <h2 class="question-text">Does NBG supply the anchor bolts for the foundation?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(6)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>No.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>NBG does not supply anchor bolts. They are the "responsibility of the contractor or erector to furnish".</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="7">
+                <p class="progress-text">Question 8 / 22</p>
+                <h2 class="question-text">Who is responsible for designing the building's foundations?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(7)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>A qualified registered professional engineer (retained by the customer/contractor). NBG does not supply the foundation design.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>NBG does not design the foundation. It must be designed by a <strong>qualified registered professional engineer</strong> to handle local soil conditions and building reactions.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="8">
+                <p class="progress-text">Question 9 / 22</p>
+                <h2 class="question-text">How many sets of final erection drawings does NBG supply with all orders?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(8)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>Three sets.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>NBG supplies <strong>three sets</strong> of final erection drawings on all orders.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="9">
+                <p class="progress-text">Question 10 / 22</p>
+                <h2 class="question-text">What is the difference between "primary" and "secondary" structural members?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(9)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p><strong>Primary</strong> members (like columns or frames) transfer loads directly to the foundation. <strong>Secondary</strong> members (like purlins or girts) transfer loads from the cladding (walls/roof) to the primary members.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>Remember it this way: <strong>Primary</strong> members touch the foundation. <strong>Secondary</strong> members (like purlins and girts) transfer loads *from* the roof and wall panels *to* the primary members.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="10">
+                <p class="progress-text">Question 11 / 22</p>
+                <h2 class="question-text">Purlins and girts are examples of which type of structural member (Primary or Secondary)?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(10)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>Secondary structural members.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>They are <strong>secondary</strong> members. They are roll-formed "Z" or "C" sections that support the roof (purlins) or wall (girts) panels and transfer the load to the primary framing.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="11">
+                <p class="progress-text">Question 12 / 22</p>
+                <h2 class="question-text">What color is the standard shop primer applied to structural members that are not galvanized?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(11)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>One shop coat of red or gray primer.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The standard primer is either <strong>red or gray</strong>.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="12">
+                <p class="progress-text">Question 13 / 22</p>
+                <h2 class="question-text">What is the *minimum* recommended roof slope for the NBG R-Panel Roof Panel?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(12)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>1/2" in 12".</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The minimum slope for an <strong>R-Panel</strong> roof is <strong>1/2" in 12"</strong>.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="13">
+                <p class="progress-text">Question 14 / 22</p>
+                <h2 class="question-text">What is the *minimum* roof slope for the NBG Trapezoidal Standing Seam Roof Systems (like CFR, SS360, and SSII)?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(13)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>1/4" in 12".</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The minimum slope for these standing seam systems is <strong>1/4" in 12"</strong>, which is a lower slope than the R-Panel.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="14">
+                <p class="progress-text">Question 15 / 22</p>
+                <h2 class="question-text">What is the *minimum* roof slope for the NBG Insulated CFR Metal Panel Roof System?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(14)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>1/2" in 12".</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The minimum slope for the <strong>Insulated CFR</strong> roof is <strong>1/2" in 12"</strong>.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="15">
+                <p class="progress-text">Question 16 / 22</p>
+                <h2 class="question-text">For the NBG Insulated CFR Metal Panel Roof System, what is the required erection direction?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(15)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>From left to right.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>These panels must be erected from <strong>left to right</strong> because they are not symmetrical.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="16">
+                <p class="progress-text">Question 17 / 22</p>
+                <h2 class="question-text">What kind of tools *must* be used for field-cutting standing seam roof panels to avoid voiding the warranty?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(16)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>Non-abrasive cutting tools, such as nibblers or tin-snips.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>You must use <strong>non-abrasive tools</strong> like <strong>nibblers or tin-snips</strong>. Abrasive tools (like grinders or saws) can damage the finish, create metal shavings that corrode the panel, and may void the warranty.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="17">
+                <p class="progress-text">Question 18 / 22</p>
+                <h2 class="question-text">What should be done daily during roof installation to prevent damage from oxidation?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(17)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>The roof surface should be cleaned of all filings, cuttings, screws, pencil markings, and debris.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The roof must be <strong>cleaned daily</strong> of all debris, especially metal filings and cuttings, which can rust and cause damage to the panels.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="18">
+                <p class="progress-text">Question 19 / 22</p>
+                <h2 class="question-text">Name two of the three standard (non-insulated) wall covering profiles mentioned in Section 10.</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(18)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>Any two of the following: R-Panel, Reverse R-Panel, or A-Panel.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The three standard wall profiles listed are the <strong>R-Panel</strong>, <strong>Reverse R-Panel</strong>, and <strong>A-Panel</strong>.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="19">
+                <p class="progress-text">Question 20 / 22</p>
+                <h2 class="question-text">Are the fasteners for Insulated Metal Wall Panels typically concealed or exposed?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(19)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>Concealed.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The fasteners are <strong>concealed</strong> within the panel lap or by sidelap panel clips.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="20">
+                <p class="progress-text">Question 21 / 22</p>
+                <h2 class="question-text">What is the main benefit of "Prismatic Skylights" according to the guide?</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(20)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>They refract sunlight into micro-beams, spreading natural light without "hot spots," glares, or UV damage. They also transmit 35% more light than standard industrial skylights.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>The key benefit is that their prisms <strong>diffuse light 100%</strong>, which prevents damaging hot spots and glare while transmitting 35% more light.</p>
+                </div>
+            </div>
+
+            <div class="question-card" data-question="21">
+                <p class="progress-text">Question 22 / 22</p>
+                <h2 class="question-text">True or False: Translucent light panels are designed to support foot traffic.</h2>
+                <button class="btn show-answer-btn" onclick="toggleAnswer(21)">Show Answer</button>
+                <div class="feedback-container">
+                    <strong>Answer:</strong>
+                    <p>False.</p>
+                    <strong>Key Point to Remember:</strong>
+                    <p>This is false. The guide explicitly states, "The buyer shall advise all parties and the owner that translucent panels are <strong>not designed for foot traffic</strong>".</p>
+                </div>
+            </div>
+
+        </div>
+
+        <nav id="navigation">
+            <button class="nav-btn" id="prev-btn" onclick="navigate(-1)" disabled>Previous</button>
+            <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next</button>
+        </nav>
+    </main>
+
+    <script>
+        // --- Select Elements ---
+        const questionCards = document.querySelectorAll('.question-card');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        let currentQuestionIndex = 0;
+        const totalQuestions = questionCards.length;
+
+        // --- Function to Show/Hide Answer ---
+        function toggleAnswer(questionIndex) {
+            const card = document.querySelector(`.question-card[data-question="${questionIndex}"]`);
+            const feedback = card.querySelector('.feedback-container');
+            const button = card.querySelector('.show-answer-btn');
+
+            if (feedback.style.display === 'block') {
+                feedback.style.display = 'none';
+                button.textContent = 'Show Answer';
+            } else {
+                feedback.style.display = 'block';
+                button.textContent = 'Hide Answer';
+            }
+        }
+
+        // --- Function to Show a Specific Question ---
+        function showQuestion(index) {
+            // Hide all cards
+            questionCards.forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Show the active card
+            questionCards[index].classList.add('active');
+
+            // Update button states
+            prevBtn.disabled = (index === 0);
+            nextBtn.disabled = (index === totalQuestions - 1);
+        }
+
+        // --- Function to Navigate Questions ---
+        function navigate(direction) {
+            // Hide any open answers before moving
+            const currentCard = questionCards[currentQuestionIndex];
+            const feedback = currentCard.querySelector('.feedback-container');
+            const button = currentCard.querySelector('.show-answer-btn');
+            feedback.style.display = 'none';
+            button.textContent = 'Show Answer';
+
+            // Change index
+            currentQuestionIndex += direction;
+
+            // Show the new question
+            showQuestion(currentQuestionIndex);
+        }
+        
+        // --- Initialize Quiz ---
+        document.addEventListener('DOMContentLoaded', () => {
+            showQuestion(currentQuestionIndex);
+        });
+    </script>
+
+</body>
+</html>
