@@ -17,6 +17,10 @@
             --incorrect-bg: #fdf0f0;
             --incorrect-border: #d9534f;
         }
+        
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -32,8 +36,8 @@
             font-size: 18px; 
         }
 
-        /* --- Quiz Container --- */
-        #quiz-container {
+        /* --- Quiz & Results Containers --- */
+        .card-container {
             width: 100%;
             max-width: 700px;
             background-color: #ffffff;
@@ -54,7 +58,7 @@
             font-size: 1.8rem; /* Large heading */
         }
 
-        #quiz-body {
+        #quiz-body, #results-body {
             padding: 30px;
         }
 
@@ -131,7 +135,6 @@
              color: #777;
         }
 
-
         /* --- Feedback --- */
         .feedback-container {
             display: none; /* Hidden until answer */
@@ -206,11 +209,56 @@
             opacity: 0.7;
         }
 
+        /* --- Results Page --- */
+        #results-container {
+            display: none; /* Hidden by default */
+            text-align: center;
+        }
+        
+        #results-icon {
+            font-size: 5rem;
+            margin: 0;
+        }
+        
+        #results-score {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+        
+        #results-message {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        #restart-btn {
+            display: block;
+            width: 100%;
+            font-family: inherit;
+            font-size: 1.2rem; /* Large, clear text */
+            font-weight: 600;
+            text-align: center;
+            padding: 18px 25px; /* Large tap target */
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        #restart-btn:hover {
+            background-color: #0056b3;
+        }
+
     </style>
 </head>
 <body>
 
-    <main id="quiz-container">
+    <main id="quiz-container" class="card-container">
         <header>
             <h1>NBG Onboarding Quiz</h1>
         </header>
@@ -550,18 +598,35 @@
             <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next</button>
         </nav>
     </main>
+    
+    <main id="results-container" class="card-container">
+        <div id="results-body">
+            <h1 id="results-icon"></h1>
+            <h2 id="results-score"></h2>
+            <p id="results-message"></p>
+            <button id="restart-btn" onclick="restartQuiz()">Try Again</button>
+        </div>
+    </main>
 
     <script>
         // --- Select Elements ---
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
         const questionCards = document.querySelectorAll('.question-card');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         
         let currentQuestionIndex = 0;
+        let score = 0;
         const totalQuestions = questionCards.length;
+        const passThreshold = 0.75; // 75% to pass
 
         // --- Function to Handle Answer Selection ---
         function selectAnswer(selectedButton, isCorrect) {
+            if (isCorrect) {
+                score++;
+            }
+            
             const card = selectedButton.closest('.question-card');
             const feedback = card.querySelector('.feedback-container');
             const options = card.querySelectorAll('.option-btn');
@@ -601,16 +666,84 @@
 
             // Update button states
             prevBtn.disabled = (index === 0);
-            nextBtn.disabled = (index === totalQuestions - 1);
+            
+            // On the last question, change "Next" to "Finish"
+            if (index === totalQuestions - 1) {
+                nextBtn.textContent = 'Finish';
+            } else {
+                nextBtn.textContent = 'Next';
+            }
         }
 
         // --- Function to Navigate Questions ---
         function navigate(direction) {
-            // Change index
             currentQuestionIndex += direction;
 
-            // Show the new question
-            showQuestion(currentQuestionIndex);
+            // If we're past the last question, show results
+            if (currentQuestionIndex === totalQuestions) {
+                showResults();
+            } 
+            // Prevent going before the first question
+            else if (currentQuestionIndex < 0) {
+                currentQuestionIndex = 0;
+            } 
+            // Show the question
+            else {
+                showQuestion(currentQuestionIndex);
+            }
+            
+            window.scrollTo(0, 0);
+        }
+        
+        // --- Function to Show Results ---
+        function showResults() {
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+
+            const percentage = Math.round((score / totalQuestions) * 100);
+            const iconEl = document.getElementById('results-icon');
+            const scoreEl = document.getElementById('results-score');
+            const msgEl = document.getElementById('results-message');
+
+            scoreEl.textContent = `Your Score: ${score} / ${totalQuestions} (${percentage}%)`;
+
+            if (percentage >= (passThreshold * 100)) {
+                iconEl.textContent = '✅';
+                msgEl.textContent = 'Great job! You have a good handle on the specifications.';
+            } else {
+                iconEl.textContent = '😞';
+                msgEl.textContent = 'Looks like you missed a few. Give it another try to master the details!';
+            }
+        }
+        
+        // --- Function to Reset All Cards ---
+        function resetAllCards() {
+            questionCards.forEach(card => {
+                // Hide feedback
+                const feedback = card.querySelector('.feedback-container');
+                feedback.style.display = 'none';
+                feedback.classList.remove('correct', 'incorrect');
+                
+                // Reset all buttons
+                const options = card.querySelectorAll('.option-btn');
+                options.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('correct', 'incorrect');
+                });
+            });
+        }
+        
+        // --- Function to Restart Quiz ---
+        function restartQuiz() {
+            score = 0;
+            currentQuestionIndex = 0;
+            
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            resetAllCards();
+            showQuestion(0);
+            window.scrollTo(0, 0);
         }
         
         // --- Initialize Quiz ---
